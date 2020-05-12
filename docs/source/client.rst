@@ -16,10 +16,3 @@ The best way to install the client is via pip. Note that the client can be insta
 
 .. note:: The client can be running on both Python 2 and 3.
 
-Client-side API
------------------
-
-.. automodule:: client
-   :members:
-   :undoc-members:
-   :show-inheritance:

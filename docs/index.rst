@@ -1,26 +1,32 @@
-bert-as-service Documentation
-=============================
+worker-as-service Documentation
+===============================
 
-``bert-as-service`` is a sentence encoding service for mapping a variable-length sentence to a fixed-length vector.
-
-.. image:: ../.github/demo.gif
-
-
+``worker-as-service`` is a distributed computing framework developed for the uses of Zalo/AILab. This framework is heavily based on ``bert-as-service``
 
 Installation
 ------------
 
-The best way to install the ``bert-as-service`` is via pip. Note that the server and  client can be installed separately or even on different machines:
+As default, this framework is installed on all the server of AILab for python environment ``dl-py3`` and ``dl-py3-stg``.
 
-.. highlight:: bash
+To manually install the framework:
+
+- step 1: clone this project to local machine
+
+- step 2: navigate to ``worker-as-service/server``
+
 .. code-block:: bash
 
-    pip install -U bert-serving-server bert-serving-client
+    pip install -e .
 
-.. Note:: The server MUST be running on **Python >= 3.5** with **Tensorflow >= 1.10** (*one-point-ten*). Again, the server does not support Python 2!
+- step 3: navigate to ``worker-as-service/client``
 
-.. Note:: The client can be running on both Python 2 and 3.
+.. code-block:: bash
 
+    pip install -e .
+
+- step 4: read example in ``worker-as-service/example`` for custom server
+
+.. Note:: The framework MUST be running on **Python >= 3.6**.
 
 Table of Content
 ----------------

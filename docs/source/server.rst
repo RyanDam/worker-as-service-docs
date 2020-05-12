@@ -28,29 +28,9 @@ Once installed, you can use the command line interface to start a bert server:
 Server-side API
 ---------------
 
-
-
 Server-side is a CLI ``bert-serving-start``, you can get the latest
 usage via:
 
 .. code:: bash
 
    bert-serving-start --help
-
-.. argparse::
-   :ref: server.helper.get_args_parser
-   :prog: bert-serving-server
-
-
-Server-side Benchmark
----------------------
-
-If you want to benchmark the speed, you may use:
-
-.. code:: bash
-
-   bert-serving-benchmark --help
-
-.. argparse::
-   :ref: server.helper.get_benchmark_parser
-   :prog: bert-serving-benchmark
