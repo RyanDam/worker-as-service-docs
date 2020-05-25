@@ -145,6 +145,51 @@ Server args explain:
 - ``log_dir``: your log directory. By default, framework will log your info to ``.log`` file and errors to ``.err`` file.
 
 
+Generate production script
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For generating process managing script for production environment, run this script:
+
+.. code-block:: bash
+
+    wkr-serving-make server.Worker \
+    -model_dir /path/to/model \
+    -model_name model.hdf5 \
+    -port_in 8996 \
+    -port_out 8998 \
+    -http_port 8900 \
+    -num_worker 2 \
+    -batch_size 1 \
+    -device_map -1 \
+    -gpu_memory_fraction 0.25 \
+    -log_dir /tmp/log_dir \
+    -name YOUR_PRODUCTION_SERVICE_NAME > run_script.sh
+
+Script explain: 
+
+- You need to run ``wkr-serving-make`` instead of ``wkr-serving-start`` to generate production script.
+- After you run that command. `run_script.sh` will be generated to the current directory.
+
+1. To start service:
+
+.. code-block:: bash
+
+    sh run_script.sh start
+
+.. note:: After you start your service, a ``YOUR_PRODUCTION_SERVICE_NAME.pid`` file will be created which contain your service process id. Also, your std printing will be output to ./logs/std.log
+
+1. To stop service (safe way):
+
+.. code-block:: bash
+
+    sh run_script.sh stop
+
+1. To stop service (forced way):
+
+.. code-block:: bash
+
+    sh run_script.sh stopf
+
 Client
 ------
 

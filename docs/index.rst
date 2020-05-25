@@ -36,11 +36,10 @@ Table of Content
 
    section/what-is-it
    section/get-start
-   tutorial/index
+   section/concept
    source/client
    source/server
    section/faq
-   section/benchmark
 
 
 Indices and tables
