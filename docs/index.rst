@@ -1,4 +1,4 @@
-worker-as-service Documentation
+Worker-as-service documentation
 ===============================
 
 ``worker-as-service`` is a distributed computing framework developed for the uses of Zalo/AILab. This framework is heavily based on ``bert-as-service``

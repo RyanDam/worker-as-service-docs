@@ -13,7 +13,6 @@ encodes. However, sometimes we want to do it in an asynchronous manner
 by feeding all textual data to the server first, fetching the encoded
 results later. This can be easily done by:
 
-.. highlight:: python
 .. code:: python
 
    # an endless data stream, generating data in an extremely fast speed

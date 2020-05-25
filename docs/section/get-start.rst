@@ -1,4 +1,4 @@
-Getting Start
+Getting Started
 =============
 
 .. contents:: :local:
@@ -27,7 +27,7 @@ To manually install the framework:
 
 - step 4: read example in ``worker-as-service/example`` for custom server
 
-.. Note:: The framework MUST be running on **Python >= 3.6**.
+.. Note:: The framework MUST be runned on **Python >= 3.6**.
 
 
 Server
@@ -36,7 +36,7 @@ Server
 Define the server
 ^^^^^^^^^^^^^^^^^
 
-Follow this example to implement your own server:
+Follow this example to implement your own server (ie ``server.py``):
 
 .. code-block:: python
 
@@ -88,29 +88,6 @@ Follow this example to implement your own server:
 
             return result
 
-    if __name__ == "__main__":
-
-        args = get_args_parser().parse_args([
-            '-protocol', 'obj',
-            '-model_dir', '/data1/ailabserver-models/face_service_models',
-            '-model_name', 'mnet_double_10062019_tf19.pb',
-            '-port_in', '8996',
-            '-port_out', '8998',
-            '-http_port', '8900',
-            '-num_worker', '2',
-            '-batch_size', '1',
-            '-device_map', '-1',
-            '-gpu_memory_fraction', '0.25',
-            '-log_dir', '/tmp/log_dir'
-        ])
-        server = WKRServer(args, hardprocesser=Worker)
-
-        # start server
-        server.start()
-
-        # join server
-        server.join()
-
 ``Worker`` explain: 
 
 - The core worker of server is ``WKRHardWorker`` class which you use to make your own ``Worker`` class.
@@ -124,11 +101,30 @@ Follow this example to implement your own server:
 .. note:: the len of result returned after processing must be matched with the input.
 
 
-``main`` function explain: 
+Start service
+^^^^^^^^^^^^^
 
-- The core server is ``WKRServer`` which is a class where you specify for your ``Worker`` to work.
+After defining your server, run this command to start:
 
-- This function will load your args and start the server for you.
+.. code-block:: bash
+
+    wkr-serving-start server.Worker \
+    -model_dir /path/to/model \
+    -model_name model.hdf5 \
+    -port_in 8996 \
+    -port_out 8998 \
+    -http_port 8900 \
+    -num_worker 2 \
+    -batch_size 1 \
+    -device_map -1 \
+    -gpu_memory_fraction 0.25 \
+    -log_dir /tmp/log_dir
+
+Script explain: 
+
+- The core server is ``WKRServer`` which is a class where you specify for your ``Worker`` to work. 
+
+- Assuming your ``Worker`` is defined in ``server.py``, This cli will load your ``Worker`` and start the server for you.
 
 Server args explain:
 
@@ -148,15 +144,6 @@ Server args explain:
 
 - ``log_dir``: your log directory. By default, framework will log your info to ``.log`` file and errors to ``.err`` file.
 
-
-Start service
-^^^^^^^^^^^^^
-
-After defining your server, run this command to start:
-
-.. code-block:: bash
-
-    python server.py
 
 Client
 ------

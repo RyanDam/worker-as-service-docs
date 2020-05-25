@@ -1,8 +1,9 @@
 What is it
 ==========
 
-.. contents:: :local:
+``Worker-as-service`` is a general computing framework with distributed work on multiple processes, across multiple physical machines.
 
+.. contents:: :local:
 
 Highlights
 ----------
