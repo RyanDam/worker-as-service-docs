@@ -41,6 +41,7 @@ Table of Content
    source/client
    source/server
    source/decentralize
+   section/faq
 
 Indices and tables
 ==================

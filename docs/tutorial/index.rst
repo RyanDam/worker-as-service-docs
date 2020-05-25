@@ -1,16 +1,13 @@
-Tutorials
+Example use cases
 =========
 
 .. contents:: :local:
 
-The full list of examples `can be found in here`_. You can run
-each via ``python example/example-k.py``. Most of examples require you
-to start a WKRServer first.
+The full list of examples `can be found in here`_.
 
 .. note:: Although ``WKRClient`` works universally on both Python 2.x and 3.x, examples are only tested on Python 3.6.
 
 .. _can be found in here: https://github.com/hanxiao/bert-as-service/tree/master/example
-
 
 .. toctree::
    :maxdepth: 1
