@@ -1,4 +1,4 @@
-Framework design concept
+Design concept
 ========================
 
 Its better to understand the concept of ``worker-as-service``.
@@ -45,3 +45,18 @@ Each ``WKRClient`` instance serves as a request client to the server. When you m
 Decentralize client side
 ------------------------
 
+When working on high throughput application, **Decentralize client** come in handy. 
+
+.. image:: ../../.github/decentralize.png
+
+``Decentralize`` provides you a tool to managing multiple concurrent group of clients. Each group of clients can connected to different remote servers.
+
+``Decentralize`` also provides CLI to control the computing process without interupting the request and response. Such CLI are:
+
+- ``wkr-decentral-terminate``: safely terminate the ``Decentralize``
+- ``wkr-decentral-switch``: safely re-config group of clients.
+- ``wkr-decentral-idle``: stop all of clients, put ``Decentralize`` on standby mode.
+- ``wkr-decentral-restart``: stop all of clients (if any) and then re create them. 
+- ``wkr-decentral-status``: show current config (groups of clients).
+
+.. note:: ``Decentralize`` can be used for other multi process computing purposes 
