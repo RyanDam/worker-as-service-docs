@@ -37,10 +37,10 @@ Table of Content
    section/what-is-it
    section/concept
    section/get-start
+   tutorial/index
    source/client
    source/server
-   section/faq
-
+   source/decentralize
 
 Indices and tables
 ==================
