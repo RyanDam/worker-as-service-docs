@@ -170,6 +170,8 @@ Script explain:
 - You need to run ``wkr-serving-make`` instead of ``wkr-serving-start`` to generate production script.
 - After you run that command. `run_script.sh` will be generated to the current directory.
 
+.. note:: You only need to run this script once, after that, use the generated ``run_script.sh`` to control your service.
+
 1. To start service:
 
 .. code-block:: bash
@@ -340,6 +342,8 @@ Script explain:
 - You need to run ``wkr-decentral-make`` instead of ``wkr-decentral-start`` to generate production script.
 - After you run that command. `run_script.sh` will be generated to the current directory.
 
+.. note:: You only need to run this script once, after that, use the generated ``run_script.sh`` to control your service.
+
 1. To start service:
 
 .. code-block:: bash
@@ -359,4 +363,3 @@ Script explain:
 .. code-block:: bash
 
     sh run_script.sh stopf
-    
