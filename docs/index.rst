@@ -35,8 +35,8 @@ Table of Content
    :maxdepth: 2
 
    section/what-is-it
-   section/get-start
    section/concept
+   section/get-start
    source/client
    source/server
    section/faq

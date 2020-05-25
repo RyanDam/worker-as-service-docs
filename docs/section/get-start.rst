@@ -1,5 +1,5 @@
 Getting Started
-=============
+===============
 
 .. contents:: :local:
 
@@ -92,7 +92,7 @@ Follow this example to implement your own server (ie ``server.py``):
 
 - The core worker of server is ``WKRHardWorker`` class which you use to make your own ``Worker`` class.
 
-- The basic 3 function to overide.
+The basic 3 functions to overide:
 
 - ``Worker::get_env``: this is where you import your own classes. For the best practice, you must import your classes here to prevent multi process/thread problem.
 - ``Worker::get_model``: this is where you initialize your model, or, any model as you like.
@@ -210,3 +210,153 @@ Started by creating a ``WKRClient``, you have to specify your server ``ip``, ``p
 
 .. note:: Your input must be an atom input, which means you *dont* encode a list of your input. The server will handle batching for you automatically.
 
+Decentralize Client
+-------------------
+
+Define the server
+^^^^^^^^^^^^^^^^^
+
+Follow this example to implement your own server (ie ``decentralize.py``):
+
+.. code-block:: python
+
+    import os
+    import sys
+    import time
+    import requests
+
+    from wkr_serving.client import WKRWorker, WKRDecentralizeCentral
+    from wkr_serving.client import WKRClient
+    from wkr_serving.client.helper import RedisHandler
+
+    class ProcessingModel(WKRWorker):
+
+        # Create connection to service
+        def get_model(self, ip, port, port_out):
+            REDIS_IP = '10.40.34.14'
+            REDIS_PORT = 12345
+            REDIS_PASS = None
+            QUEUE_KEY = 'EXAMPLE_QUEUE'
+            redis_client = RedisHandler(QUEUE_KEY, REDIS_IP, REDIS_PORT, password=REDIS_PASS)
+            return WKRClient(ip=ip, port=port, port_out=port_out, ignore_all_checks=True), redis_client
+
+        # Do the work loop, just 1 job at a time for efficiency
+        def do_work(self, model, logger):
+
+            model, redis_client = model
+
+            try:
+                # Step 1: get data, ex: from redis
+                input = redis_client.pop()
+                if input is not None:
+                    # Step 2: model.encode
+                    result = model.encode(input)
+                    # Step 3: push result
+                    status = request.post(PUSH_API, json=result)
+
+                    if status.status_code == 200:
+                        logger.info('DONE job with input: {}'.format(input))
+                    else:
+                        raise Exception('Push result failed')
+                else:
+                    time.sleep(0.5) # sleep for 0.5s
+
+            except Exception as e:
+                raise Exception("{}\nTHIS IS CUSTOM EXCEPTION for input: {}".format(e, input))
+
+        # close model connection to service
+        def off_model(self, model):
+            model, redis_client = model
+            model.close()
+            redis_client.close()
+
+``ProcessingModel`` explain: 
+
+- ``ProcessingModel`` is a basic block of a client (called as a processing unit). ``Decentralize`` will directly manage this.
+
+The basic 3 functions to overide:
+
+- ``ProcessingModel::get_model``: this is where your client is created. input of this function is the information of remote service this client will connect to, including ``ip``, ``port`` and ``port_out``. You can also create many other thing like redis connect, DB connect...
+
+.. note:: this function will be called once when ``ProcessingModel`` is created.
+
+- ``ProcessingModel::off_model``: all you need to do is move all the connection and deinit all the resources. This is very important as you don't want your system get unstable overtime.
+
+.. note:: this function will be called once when ``ProcessingModel`` is destroyed.
+
+- ``ProcessingModel::do_work``: this is where the main work happened. You need to implement your own logic here.
+
+.. note:: this function will be put in a loop, so this function will likely to process only 1 request per loop.
+
+Start decentralize
+^^^^^^^^^^^^^^^^^^
+
+After defining your decentralize, run this command to start:
+
+.. code-block:: bash
+
+    wkr-decentral-start decentralize.ProcessingModel \
+    -port 21324 \
+    -port_out 21326 \
+    -http_port 8900 \
+    -num_client 24 \
+    -remote_servers [[10.40.34.16, 8068, 8069], [10.40.34.14, 8068, 8069]] \
+    -log_dir /tmp/log_dir
+
+Script explain: 
+
+- The core server is ``WKRWorker`` which is a class where you specify for your ``ProcessingModel`` to work. 
+
+- Assuming your ``ProcessingModel`` is defined in ``decentralize.py``, This cli will load your ``ProcessingModel`` and start the server for you.
+
+Server args explain:
+
+- ``port``, ``port_out``: ports of your server to run, this server will need 2 ports.
+
+- ``remote_servers``: config remote server for each group of clients. remote server is specific by ``[<ip>, <port_in>, <port_out>]``
+
+- ``num_client``: number of client of each remote server client group.
+
+- ``log_dir``: your log directory. By default, framework will log your info to ``.log`` file and errors to ``.err`` file.
+
+Generate production script
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For generating process managing script for production environment, run this script:
+
+.. code-block:: bash
+
+    wkr-decentral-make decentralize.ProcessingModel \
+    -port 21324 \
+    -port_out 21326 \
+    -http_port 8900 \
+    -num_client 24 \
+    -remote_servers [[10.40.34.16, 8068, 8069], [10.40.34.14, 8068, 8069]] \
+    -log_dir /tmp/log_dir
+    -name YOUR_DECENTRALIZE_SERVICE_NAME > run_script.sh
+
+Script explain: 
+
+- You need to run ``wkr-decentral-make`` instead of ``wkr-decentral-start`` to generate production script.
+- After you run that command. `run_script.sh` will be generated to the current directory.
+
+1. To start service:
+
+.. code-block:: bash
+
+    sh run_script.sh start
+
+.. note:: After you start your service, a ``YOUR_DECENTRALIZE_SERVICE_NAME.pid`` file will be created which contain your service process id. Also, your std printing will be output to ./logs/std.log
+
+1. To stop service (safe way):
+
+.. code-block:: bash
+
+    sh run_script.sh stop
+
+1. To stop service (forced way):
+
+.. code-block:: bash
+
+    sh run_script.sh stopf
+    
